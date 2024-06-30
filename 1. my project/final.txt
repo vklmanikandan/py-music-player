@@ -1,0 +1,83 @@
+from tkinter import *
+import tkinter as tk
+from tkinter import ttk, filedialog
+import pygame
+from pygame import mixer
+import os
+
+root = Tk()
+root.title("PYTHON Music Player")
+root.geometry("920x670+290+85")
+root.configure(bg="white")
+root.resizable(False,False)
+
+mixer.init()
+
+# 9-open folder
+def open_folder():
+    path = filedialog.askdirectory()
+    if path:
+        os.chdir(path)
+        song = os.listdir(path)
+        ##      print(songs)
+        for song in song:
+            if song.endswith(".mp3"):
+                playlist.insert(END, song)
+
+
+# 10-play music
+def play_song():
+    music_name = playlist.get(ACTIVE)
+    mixer.music.load(playlist.get(ACTIVE))
+    mixer.music.play()
+    music.config(text=music_name[0:-5])
+
+
+# 1-icon
+image_icon = PhotoImage(file="logo.PNG")
+root.iconphoto(False, image_icon)
+
+top = PhotoImage(file="top.png")
+Label(root, image=top, bg="white").pack()
+
+# 2-logo
+Logo = PhotoImage(file="logo.PNG")
+Label(root, image=Logo,bg="white").place(x=65, y=112)
+
+# 3-buttons
+play_button = PhotoImage(file="play.png")
+Button(root, image=play_button, bg="white", bd=0, command=play_song).place(x=113, y=430)
+
+pause_button = PhotoImage(file="pause.png")
+Button(root, image=pause_button, bg="white", bd=0, command=mixer.music.pause).place(x=180, y=500)
+
+resume_button = PhotoImage(file="resume.PNG")
+Button(root, image=resume_button, bg="white", bd=0, command=mixer.music.unpause).place(x=119, y=560)
+
+stop_button = PhotoImage(file="stop.PNG")
+Button(root, image=stop_button, bg="white", bd=0, command=mixer.music.stop).place(x=30, y=500)
+
+# 4-musiclineshow
+music = Label(root, font=("verdana",15), fg="black", bg="white")
+music.place(x=150, y=340, anchor="center")
+
+# 5-music
+menu = PhotoImage(file="menu.png")
+Label(root, image=menu, bg="white",fg="red").pack(padx=10, pady=50, side=RIGHT)
+
+# 6-music frame
+music_frame = Frame(root, bd=2, relief=RIDGE)
+music_frame.place(x=330, y=350, width=560, height=250)
+
+# 7-folder button
+Button(root, text="Open Folder", width=15, height=2, font=("verdana", 10, "bold"), fg="darkblue", bg="yellow",command=open_folder).place(x=330., y=300)
+
+# 8-scrolbar
+scroll = Scrollbar(music_frame)
+playlist = Listbox(music_frame, width=100, font=("verdana", 10), bg="light blue", fg="black", selectbackground="dark blue",
+                   cursor="hand2", bd=0, yscrollcommand=scroll.set)
+scroll.config(command=playlist.yview)
+scroll.pack(side=RIGHT, fill=Y)
+playlist.pack(side=LEFT, fill=BOTH)
+
+root.mainloop()
